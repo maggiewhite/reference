@@ -15,12 +15,17 @@ setopt share_history
 setopt always_to_end
 plugins=(git colored-man-pages colorize pip python brew osx zsh-syntax-highlighting zsh-autosuggestions)
 
-bindkey "[D" backward-word
-bindkey "[C" forward-word
-bindkey "^[a" beginning-of-line
-bindkey "^[e" end-of-line
-# new feature added Feb 2020
+# word characters are only alphanumeric (each dir in a path is a word)
+autoload -U select-word-style
+select-word-style bash
+bindkey "^[[D" backward-word # left arrow key
+bindkey "^[[C" forward-word # right arrow key
+bindkey "^[a" beginning-of-line # ctrl-a
+bindkey "^[e" end-of-line # ctrl-e
+bindkey "^H" backward-kill-word # ctrl-backspace
+# new feature added Feb 2020 to iTerm2
 source ~/.iterm2_shell_integration.zsh
+# fancy prompt settings so it's easy to see the git status
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
 zstyle ':vcs_info:*' formats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{5}]%f '

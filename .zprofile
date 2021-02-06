@@ -24,4 +24,14 @@ function screen_setup() {
   screen -ls
 }
 
+# returns all persistent logcat from a device
+function logcat() {
+  adb="adb "
+  if [ ! -z "$1" ]; then
+    adb+="-s $1 "
+  fi
+  $adb root > /dev/null
+  $adb shell 'cat $(find /data/misc/logd/* | sort -ru | tail -n +2)'
+}
+
 source .zshrc

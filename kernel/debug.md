@@ -3,12 +3,12 @@ qualcomm chip.
 
 ## Logging
 You can get kernel logs via:
-```
+```bash
 dmesg > dmesg.txt
 ```
 
 Clear dmesg via:
-```
+```bash
 dmesg -C
 ```
 
@@ -19,7 +19,7 @@ Enable additional logging via [dynamic debug](https://www.kernel.org/doc/html/la
 at `arch/arm64/configs/` for mobile devices).
 
 - See all of the potential logs you can enable via:
-    ```
+    ```bash
     cat /d/dynamic_debug/control
     # filename:lineno [module]function flags format
     ...
@@ -27,14 +27,14 @@ at `arch/arm64/configs/` for mobile devices).
     ```
 
 - Grep for the specific file you care about (ex. sound/core/pcm.c), and enable logs like so:
-    ```
+    ```bash
     echo 'module snd_pcm +p' > /d/dynamic_debug/control
     echo 'file sound/core/pcm.c +p' > /d/dynamic_debug/control
     echo 'file sound/core/* +p' > /d/dynamic_debug/control
     ```
 
 - Then enable verbose printk logging:
-    ```
+    ```bash
     echo 8 > /proc/sys/kernel/printk
     ```
 
@@ -47,14 +47,14 @@ Resources:
 During runtime, device tree parameters can be found at `/sys/firmware/devicetree/base`. Keep in mind
 that these are binary values, so non-string values won't print without being piped through `xxd`.
 Ex:
-```
+```bash
 cat /sys/firmware/devicetree/base/soc/devfreq-cpufreq/m4m-cpufreq/target-dev | xxd
 ```
 
 Device tree files can be found in the kernel code at `arch/arm64/boot/dts`.
 
 Note: device-tree-compiler would be useful, but not usually available on Android. Use it like so:
-```
+```bash
 dtc -I fs /sys/firmware/devicetree/base
 ```
 
@@ -63,7 +63,7 @@ Resources:
 
 ## Configurable runtime module parameters
 Set up a configurable parameter in a kernel module like the following example:
-```
+```C
 #include <linux/moduleparam.h>
 static <type> <name>=<default>;
 module_param(<name>,<moduleparam type>,<linux file permissions>);
@@ -144,23 +144,35 @@ see which cores are related.
 
 Modify the governer on related cores by checking the available ones via 
 `cat scaling_available_governors`, then here's an example to set frequency to max:
+```
+echo performance > /sys/devices/system/cpu/cpuX/scaling_governer
+```
 
-    ```
-    echo performance > /sys/devices/system/cpu/cpuX/scaling_governer
-    ```
+TODO: add info about generating arbitrary CPU load
+
+## Thermal + Power
+Find all of the power supplies (battery, usb, bms) on the device at:
+```bash
+ls /sys/class/power_supply/*/
+```
+
+Get all measured temps on the device via:
+```bash
+for f in /sys/class/thermal/thermal_zone*; do echo $(cat "$f/type"): $(cat "$f/temp"); done
+```
 
 ### Enable ftrace events
 First: read `/d/tracing/README`
 
 Enabling/disabling is done via `echo [0|1] > /d/tracing/.../enable`. Some interesting things to
 enable:
-```
+```bash
 echo 1 > /d/tracing/events/irq/enable
 echo 1 > /d/tracing/events/sched/sched_wakeup/enable
 ```
 
 The easiest way to get a trace on Android is via systrace:
-```
+```bash
 python2.7 ~/Library/Android/sdk/platform-tools/systrace/systrace.py -o systrace.html
 ```
 
