@@ -3,16 +3,14 @@ qualcomm chip.
 
 ## Logging
 You can get kernel logs via:
+```
+dmesg > dmesg.txt
+```
 
-        ```
-        dmesg > dmesg.txt
-        ```
-
-Clear dmesg via 
-
-        ```
-        dmesg -C
-        ```
+Clear dmesg via:
+```
+dmesg -C
+```
 
 ### Dynamic debug
 Enable additional logging via [dynamic debug](https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html).
