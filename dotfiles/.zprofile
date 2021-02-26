@@ -1,4 +1,5 @@
-source .aliases
+export DOTFILES=$(dirname "$0")
+source $DOTFILES/.aliases
 
 export CLICOLOR=1
 export COLORTERM=truecolor
@@ -34,4 +35,4 @@ function logcat() {
   $adb shell 'cat $(find /data/misc/logd/* | sort -ru | tail -n +2)'
 }
 
-source .zshrc
+source $DOTFILES/.zshrc
